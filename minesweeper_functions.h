@@ -12,6 +12,8 @@ typedef unsigned char byte;
 #define SURROUNDING_MINES_BITMASK 0b1111
 #define SURROUNDING_MINES (SURROUNDING_MINES_BITMASK << SURROUNDING_MINES_SHIFT)
 
+#define INT_TO_CHAR_OFFSET 48
+
 typedef struct tile {
     int row;
     int column;

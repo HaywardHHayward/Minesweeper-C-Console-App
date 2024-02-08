@@ -86,13 +86,14 @@ board_t* create_board(int row, int col, int mines) {
     board->array = (tile_t**) calloc(row, sizeof(tile_t*));
     board->row_size = row;
     board->col_size = col;
-    board->mine_tiles = create_array(sizeof(tile_t));
+    board->mine_tiles = create_array_with_length(sizeof(tile_t), mines);
     board->flag_tiles = create_array(sizeof(tile_t));
     for (int r = 0; r < row; r++) {
         board->array[r] = (tile_t*) calloc(col, sizeof(tile_t));
         for (int c = 0; c < col; c++) {
-            get_tile(board, r, c)->row = r;
-            get_tile(board, r, c)->column = c;
+            tile_t* tile = get_tile(board, r, c);
+            tile->row = r;
+            tile->column = c;
         }
     }
     while (board->mine_tiles->size < mines) {
@@ -122,10 +123,26 @@ int compare_tiles(const void* t1, const void* t2) {
     return same_state ? 0 : 1;
 }
 
+char tile_repr(tile_t* tile){
+    if(is_flagged(tile)) {
+        return 'P';
+    }
+    if(!is_checked(tile)){
+        return 'O';
+    }
+    if(is_mine(tile)){
+        return 'M';
+    }
+    if(get_surrounding_mines(tile) == 0){
+        return ' ';
+    }
+    return (char) (get_surrounding_mines(tile) + INT_TO_CHAR_OFFSET);
+}
+
 void print_board(board_t* board) {
     for (int i = 0; i < board->row_size; i++) {
         for (int j = 0; j < board->col_size; j++) {
-            printf("%d ", get_surrounding_mines(get_tile(board, i, j)));
+            printf("%c ", tile_repr(get_tile(board, i, j)));
         }
         printf("\n");
     }
