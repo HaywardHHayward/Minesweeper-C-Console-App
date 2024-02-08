@@ -1,0 +1,4 @@
+# ninja log v5
+0	344	1707417008166357480	CMakeFiles/Minesweeper.dir/main.c.o	18d7b5291b83d045
+0	361	1707417008184768895	CMakeFiles/Minesweeper.dir/minesweeper_functions.c.o	4e0200863ae97251
+361	509	1707417008325447319	Minesweeper	80f14d7c8f65a0a7

@@ -13,28 +13,16 @@ int is_mine(tile_t* tile) {
     return tile->mine_state & IS_MINE;
 }
 
-int toggle_checked(tile_t* tile) {
-    if (is_flagged(tile)) {
-        return -1;
-    }
+static inline void toggle_checked(tile_t* tile) {
     tile->mine_state ^= IS_CHECKED;
-    return tile->mine_state & IS_CHECKED ? 1 : 0;
 }
 
-int toggle_flagged(tile_t* tile) {
-    if (is_checked(tile)) {
-        return -1;
-    }
+static inline void toggle_flagged(tile_t* tile) {
     tile->mine_state ^= IS_FLAGGED;
-    return tile->mine_state & IS_FLAGGED ? 1 : 0;
 }
 
-int toggle_mine(tile_t* tile) {
-    if (is_checked(tile)) {
-        return -1;
-    }
+static inline void toggle_mine(tile_t* tile) {
     tile->mine_state ^= IS_MINE;
-    return tile->mine_state & IS_MINE ? 1 : 0;
 }
 
 void set_surrounding_mines(tile_t* tile, byte mine_count) {
@@ -54,6 +42,33 @@ tile_t* get_tile(board_t* board, int row, int col) {
         return NULL;
     }
     return &board->array[row][col];
+}
+
+int flag_tile(board_t* board, int row, int col) {
+    tile_t* tile = get_tile(board, row, col);
+    if (!tile) {
+        return INVALID_TILE;
+    }
+    if (is_checked(tile)) {
+        return CHANGE_CHECKED;
+    }
+    toggle_flagged(tile);
+    return SUCCESS;
+}
+
+int check_tile(board_t* board, int row, int col) {
+    tile_t* tile = get_tile(board, row, col);
+    if (!tile) {
+        return INVALID_TILE;
+    }
+    if (is_checked(tile)) {
+        return CHANGE_CHECKED;
+    }
+    if (is_flagged(tile)) {
+        return CHECK_FLAGGED;
+    }
+    toggle_checked(tile);
+    return SUCCESS;
 }
 
 static inline void add_surrounding_mines(board_t* board, tile_t* mine) {
@@ -123,17 +138,17 @@ int compare_tiles(const void* t1, const void* t2) {
     return same_state ? 0 : 1;
 }
 
-char tile_repr(tile_t* tile){
-    if(is_flagged(tile)) {
+char tile_repr(tile_t* tile) {
+    if (is_flagged(tile)) {
         return 'P';
     }
-    if(!is_checked(tile)){
+    if (!is_checked(tile)) {
         return 'O';
     }
-    if(is_mine(tile)){
+    if (is_mine(tile)) {
         return 'M';
     }
-    if(get_surrounding_mines(tile) == 0){
+    if (get_surrounding_mines(tile) == 0) {
         return ' ';
     }
     return (char) (get_surrounding_mines(tile) + INT_TO_CHAR_OFFSET);
