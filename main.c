@@ -153,10 +153,10 @@ int main(int argc, char** argv) {
         fflush(stdin);
         int valid = 0;
         int is_checking = 0;
-        char input[MAX_COMMAND_LENGTH];
+        char input[6];
         while (!valid) {
             printf("Checking or flagging? (c/f, check/flag): ");
-            fgets(input, MAX_COMMAND_LENGTH, stdin);
+            fgets(input, 6, stdin);
             fflush(stdin);
             for (int i = 0; input[i]; i++) {
                 if (input[i] == '\n') {

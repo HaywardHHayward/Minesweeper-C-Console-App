@@ -1,4 +1,4 @@
 /Users/haywardhhayward/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Users/haywardhhayward/Applications/CLion.app/Contents/bin/ninja/mac/aarch64/ninja -DCMAKE_TOOLCHAIN_FILE=/Users/haywardhhayward/.vcpkg-clion/vcpkg/scripts/buildsystems/vcpkg.cmake -G Ninja -S /Users/haywardhhayward/CLionProjects/Minesweeper -B /Users/haywardhhayward/CLionProjects/Minesweeper/cmake-build-debug-macos-arm
--- Configuring done (0.1s)
+-- Configuring done (0.0s)
 -- Generating done (0.0s)
 -- Build files have been written to: /Users/haywardhhayward/CLionProjects/Minesweeper/cmake-build-debug-macos-arm
