@@ -6,6 +6,10 @@
 			[
 				{
 					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
 					"jsonFile" : "directory-.-Release-f5ebdc15457944623624.json",
 					"minimumCMakeVersion" : 
 					{
@@ -13,6 +17,21 @@
 					},
 					"projectIndex" : 0,
 					"source" : ".",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "lib/haywardstd",
+					"jsonFile" : "directory-lib.haywardstd-Release-0320852f205c3f03127e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.27"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "lib/haywardstd",
 					"targetIndexes" : 
 					[
 						0
@@ -25,21 +44,30 @@
 				{
 					"directoryIndexes" : 
 					[
-						0
+						0,
+						1
 					],
 					"name" : "Minesweeper",
 					"targetIndexes" : 
 					[
-						0
+						0,
+						1
 					]
 				}
 			],
 			"targets" : 
 			[
 				{
+					"directoryIndex" : 1,
+					"id" : "HAYWARDSTD::@3b77801264cf9be22720",
+					"jsonFile" : "target-HAYWARDSTD-Release-d7e055d05367ca954c57.json",
+					"name" : "HAYWARDSTD",
+					"projectIndex" : 0
+				},
+				{
 					"directoryIndex" : 0,
 					"id" : "Minesweeper::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Minesweeper-Release-96a81525188dac823053.json",
+					"jsonFile" : "target-Minesweeper-Release-63095a4d372e00f1f848.json",
 					"name" : "Minesweeper",
 					"projectIndex" : 0
 				}

@@ -4,6 +4,7 @@
 #include "minesweeper_functions.h"
 
 void check_tile_from_input(board_t* board, int* hit_mine) {
+    fflush(stdin);
     int row, col;
     char input[MAX_BOARD_SIDE_LENGTH];
     char* end;
@@ -91,6 +92,7 @@ void flag_tile_from_input(board_t* board) {
 }
 
 int main(int argc, char** argv) {
+    fflush(stdin);
     int row_size, col_size, mine_size;
     if (argc == 4) {
         char* end;
@@ -148,6 +150,7 @@ int main(int argc, char** argv) {
     int win = 0;
     while (1) {
         print_board(board);
+        fflush(stdin);
         int valid = 0;
         int is_checking = 0;
         char input[MAX_COMMAND_LENGTH];
