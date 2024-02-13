@@ -48,7 +48,7 @@ void expand_array(array_t* array) {
 }
 
 void* get_array_index(array_t* array, unsigned long index) {
-    return array->array + (index * array->data_size);
+    return (void*)((char*)array->array + (index * array->data_size));
 }
 
 void set_array_index(array_t* array, unsigned long index, void* data) {
