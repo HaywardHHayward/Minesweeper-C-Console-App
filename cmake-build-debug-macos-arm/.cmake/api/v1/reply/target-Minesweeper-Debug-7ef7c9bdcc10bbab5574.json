@@ -12,8 +12,7 @@
 		[
 			"_add_executable",
 			"add_executable",
-			"target_link_libraries",
-			"target_include_directories"
+			"target_link_libraries"
 		],
 		"files" : 
 		[
@@ -40,13 +39,7 @@
 			{
 				"command" : 2,
 				"file" : 1,
-				"line" : 13,
-				"parent" : 0
-			},
-			{
-				"command" : 3,
-				"file" : 1,
-				"line" : 10,
+				"line" : 12,
 				"parent" : 0
 			}
 		]
@@ -58,13 +51,6 @@
 			[
 				{
 					"fragment" : "-g -std=gnu2x -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk -fcolor-diagnostics"
-				}
-			],
-			"includes" : 
-			[
-				{
-					"backtrace" : 4,
-					"path" : "/Users/haywardhhayward/CLionProjects/haywardstd"
 				}
 			],
 			"language" : "C",
@@ -83,6 +69,13 @@
 			]
 		}
 	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "HAYWARDSTD::@3b77801264cf9be22720"
+		}
+	],
 	"id" : "Minesweeper::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
@@ -98,7 +91,7 @@
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "/Users/haywardhhayward/CLionProjects/haywardstd/cmake-build-debug/libhaywardstd.a",
+				"fragment" : "lib/haywardstd/libHAYWARDSTD.a",
 				"role" : "libraries"
 			}
 		],

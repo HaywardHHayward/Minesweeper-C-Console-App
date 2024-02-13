@@ -1,4 +1,6 @@
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "minesweeper_functions.h"
 
 int is_checked(tile_t* tile) {
@@ -53,7 +55,19 @@ int flag_tile(board_t* board, int row, int col) {
         return CHANGE_CHECKED;
     }
     toggle_flagged(tile);
+    add_to_array(board->flag_tiles, (void*)tile);
     return SUCCESS;
+}
+
+static inline void check_surrounding_tiles(board_t* board, int row, int col) {
+    for (int r = -1; r <= 1; r++) {
+        for (int c = -1; c <= 1; c++) {
+            if (r == 0 && c == 0) {
+                continue;
+            }
+            check_tile(board, row + r, col + c);
+        }
+    }
 }
 
 int check_tile(board_t* board, int row, int col) {
@@ -68,12 +82,15 @@ int check_tile(board_t* board, int row, int col) {
         return CHECK_FLAGGED;
     }
     toggle_checked(tile);
+    if (!is_mine(tile) && get_surrounding_mines(tile) == 0) {
+        check_surrounding_tiles(board, row, col);
+    }
     return SUCCESS;
 }
 
+
 static inline void add_surrounding_mines(board_t* board, tile_t* mine) {
-    int row = mine->row;
-    int col = mine->column;
+    int row = mine->row, col = mine->column;
     for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
             if (i == 0 && j == 0) {
@@ -101,7 +118,7 @@ board_t* create_board(int row, int col, int mines) {
     board->array = (tile_t**) calloc(row, sizeof(tile_t*));
     board->row_size = row;
     board->col_size = col;
-    board->mine_tiles = create_array_with_length(sizeof(tile_t), mines);
+    board->mine_tiles = create_array(sizeof(tile_t));
     board->flag_tiles = create_array(sizeof(tile_t));
     for (int r = 0; r < row; r++) {
         board->array[r] = (tile_t*) calloc(col, sizeof(tile_t));
@@ -130,12 +147,7 @@ board_t* create_board(int row, int col, int mines) {
 int compare_tiles(const void* t1, const void* t2) {
     tile_t* tile1 = (tile_t*) t1;
     tile_t* tile2 = (tile_t*) t2;
-    int same_position = (tile1->row == tile2->row) && (tile1->column == tile2->column);
-    if (!same_position) {
-        return -1;
-    }
-    int same_state = tile1->mine_state == tile2->mine_state;
-    return same_state ? 0 : 1;
+    return !((tile1->row == tile2->row) && (tile1->column == tile2->column));
 }
 
 char tile_repr(tile_t* tile) {
@@ -155,10 +167,36 @@ char tile_repr(tile_t* tile) {
 }
 
 void print_board(board_t* board) {
+    char row_str[MAX_BOARD_SIDE_LENGTH];
+    char col_str[MAX_BOARD_SIDE_LENGTH];
+    sprintf(row_str, "%d", board->row_size);
+    sprintf(col_str, "%d", board->col_size);
+    unsigned int row_length = strlen(row_str);
+    unsigned int col_length = strlen(col_str);
+    printf("%*c", row_length, ' ');
+    for (int i = 0; i < board->col_size; i++) {
+        printf("%*d", col_length + 1, i + 1);
+    }
+    printf("\n");
     for (int i = 0; i < board->row_size; i++) {
+        printf("%-*d", row_length, i + 1);
         for (int j = 0; j < board->col_size; j++) {
-            printf("%c ", tile_repr(get_tile(board, i, j)));
+            printf("%*c", col_length + 1, tile_repr(get_tile(board, i, j)));
         }
         printf("\n");
     }
+}
+
+void free_board(board_t* board) {
+    free_array(board->mine_tiles);
+    free_array(board->flag_tiles);
+    for (int r = 0; r < board->row_size; r++) {
+        free(board->array[r]);
+    }
+    free(board->array);
+    free(board);
+}
+
+int flagged_all_mines(board_t* board) {
+    return array_set_equal(board->mine_tiles, board->flag_tiles, compare_tiles);
 }
