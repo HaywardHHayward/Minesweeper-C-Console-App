@@ -190,8 +190,10 @@ int main(int argc, char** argv) {
         }
     }
     if (win) {
+        print_board(board);
         printf("Congrats! You flagged all the mines! You win!\n");
     } else {
+        print_board(board);
         printf("Oops! You hit a mine! You lost!\n");
     }
     free_board(board);
