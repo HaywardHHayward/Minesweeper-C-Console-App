@@ -55,7 +55,9 @@ int flag_tile(board_t* board, int row, int col) {
         return CHANGE_CHECKED;
     }
     toggle_flagged(tile);
-    add_to_array(board->flag_tiles, (void*)tile);
+    if (remove_from_array(board->flag_tiles, (void*) tile, compare_tiles) == 0) {
+        add_to_array(board->flag_tiles, (void*) tile);
+    }
     return SUCCESS;
 }
 

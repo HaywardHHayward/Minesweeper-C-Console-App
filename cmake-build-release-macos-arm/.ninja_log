@@ -1,12 +1,7 @@
 # ninja log v5
-5	287	1707864940604489761	CMakeFiles/Minesweeper.dir/main.c.o	d303f5aaec256df6
-7	295	1707864940613309143	CMakeFiles/Minesweeper.dir/minesweeper_functions.c.o	14c11a748974357b
-314	502	1707864940817686955	Minesweeper	9b4efa911e9f4cb2
-7	293	1707864940608857953	lib/haywardstd/CMakeFiles/HAYWARDSTD.dir/haywardstd.c.o	91dd1987f960d938
-293	314	1707864940633709000	lib/haywardstd/libHAYWARDSTD.a	c04331b5bbe9a957
-1	468	1707867298940362071	CMakeFiles/Minesweeper.dir/main.c.o	d303f5aaec256df6
-2	471	1707867298945116255	lib/haywardstd/CMakeFiles/HAYWARDSTD.dir/haywardstd.c.o	91dd1987f960d938
 471	569	1707867299044568000	lib/haywardstd/libHAYWARDSTD.a	c04331b5bbe9a957
-569	2775	1707867301248375306	Minesweeper	9b4efa911e9f4cb2
-4	418	1707867456523553877	CMakeFiles/Minesweeper.dir/main.c.o	d303f5aaec256df6
+1	77	1708193352115706894	build.ninja	3a85ccca80e3e427
 418	458	1707867456563664257	Minesweeper	9b4efa911e9f4cb2
+7	295	1707864940613309143	CMakeFiles/Minesweeper.dir/minesweeper_functions.c.o	14c11a748974357b
+4	418	1707867456523553877	CMakeFiles/Minesweeper.dir/main.c.o	d303f5aaec256df6
+2	471	1707867298945116255	lib/haywardstd/CMakeFiles/HAYWARDSTD.dir/haywardstd.c.o	91dd1987f960d938
