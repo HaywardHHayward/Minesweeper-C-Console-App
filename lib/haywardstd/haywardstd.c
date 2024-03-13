@@ -1,8 +1,10 @@
 #include "haywardstd.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-
-array_t* create_array(unsigned long data_size) {
-    array_t* array = (array_t*) calloc(1, sizeof(array_t));
+array_t* create_array(const unsigned long data_size) {
+    array_t* array = calloc(1, sizeof(array_t));
     array->data_size = data_size;
     array->free_func = NULL;
     array->array = calloc(INITIAL_DYNAMIC_ARRAY_SIZE, data_size);
@@ -10,7 +12,7 @@ array_t* create_array(unsigned long data_size) {
     return array;
 }
 
-array_t* create_array_with_length(unsigned long data_size, unsigned long length) {
+array_t* create_array_with_length(const unsigned long data_size, const unsigned long length) {
     array_t* array = create_array(data_size);
     resize_array(array, length);
     return array;
@@ -29,7 +31,7 @@ void free_array(array_t* array) {
     free(array);
 }
 
-void resize_array(array_t* array, unsigned long new_size) {
+void resize_array(array_t* array, const unsigned long new_size) {
     if (array->size > new_size) {
         perror("Cannot resize to smaller than the current array size");
         abort();
@@ -47,11 +49,11 @@ void expand_array(array_t* array) {
     resize_array(array, array->capacity * 2);
 }
 
-void* get_array_index(array_t* array, unsigned long index) {
-    return (void*)((char*)array->array + (index * array->data_size));
+void* get_array_index(const array_t* array, const unsigned long index) {
+    return (char*)array->array + index * array->data_size;
 }
 
-void set_array_index(array_t* array, unsigned long index, void* data) {
+void set_array_index(const array_t* array, const unsigned long index, const void* data) {
     if (index >= array->size) {
         perror("You indexed out of the bounds of the array");
         abort();
@@ -59,7 +61,7 @@ void set_array_index(array_t* array, unsigned long index, void* data) {
     memmove(get_array_index(array, index), data, array->data_size);
 }
 
-void add_to_array(array_t* array, void* data) {
+void add_to_array(array_t* array, const void* data) {
     if (array->size + 1 == array->capacity) {
         expand_array(array);
     }
@@ -67,7 +69,7 @@ void add_to_array(array_t* array, void* data) {
     array->size++;
 }
 
-void* find_in_array(array_t* array, void* data, int compar(const void*, const void*), unsigned long* index) {
+void* find_in_array(const array_t* array, const void* data, int (* compar)(const void*, const void*), unsigned long* index) {
     for (int i = 0; i < array->size; i++) {
         if (compar(get_array_index(array, i), data) != 0) continue;
         if (index) {
@@ -78,7 +80,7 @@ void* find_in_array(array_t* array, void* data, int compar(const void*, const vo
     return NULL;
 }
 
-int remove_from_array(array_t* array, void* data, int compar(const void*, const void*)) {
+int remove_from_array(array_t* array, const void* data, int (* compar)(const void*, const void*)) {
     unsigned long* index = calloc(1, sizeof(unsigned long));
     void* result = find_in_array(array, data, compar, index);
     if (!result) {
@@ -88,13 +90,13 @@ int remove_from_array(array_t* array, void* data, int compar(const void*, const 
     unsigned long i = *index;
     int ret = remove_index_from_array(array, i);
     free(index);
-    if(array->size < (array->capacity / 2) + 1 && (array->capacity / 2) + 1 != array->capacity){
+    if(array->size < array->capacity / 2 + 1 && array->capacity / 2 + 1 != array->capacity){
         resize_array(array, (array->capacity / 2) + 1);
     }
     return ret;
 }
 
-int remove_index_from_array(array_t* array, unsigned long index) {
+int remove_index_from_array(array_t* array, const unsigned long index) {
     if (index >= array->size) {
         return 0;
     }
@@ -112,7 +114,7 @@ int remove_index_from_array(array_t* array, unsigned long index) {
     return 1;
 }
 
-void* array_insert_at_index(array_t* array, unsigned long index, void* data) {
+void* array_insert_at_index(array_t* array, const unsigned long index, const void* data) {
     if (index >= array->size) {
         perror("You indexed outside the bounds of the array");
         abort();
@@ -127,7 +129,7 @@ void* array_insert_at_index(array_t* array, unsigned long index, void* data) {
     return get_array_index(array, index);
 }
 
-void range_add_to_array(array_t* array, array_t* new_data) {
+void range_add_to_array(array_t* array, const array_t* new_data) {
     if (array->data_size != new_data->data_size) {
         perror("Data sizes mismatch");
         abort();
@@ -137,12 +139,12 @@ void range_add_to_array(array_t* array, array_t* new_data) {
     }
 }
 
-int contained_in_array(array_t* array, void* data, int (* compar)(const void*, const void*)) {
-    void* result = find_in_array(array, data, compar, NULL);
+int contained_in_array(const array_t* array, const void* data, int (* compar)(const void*, const void*)) {
+    const void* result = find_in_array(array, data, compar, NULL);
     return result ? 1 : 0;
 }
 
-int array_set_equal(array_t* array1, array_t* array2, int compar(const void*, const void*)) {
+int array_set_equal(const array_t* array1, const array_t* array2, int (* compar)(const void*, const void*)) {
     if (array1->size != array2->size || array1->data_size != array2->data_size) {
         return 0;
     }
@@ -150,7 +152,7 @@ int array_set_equal(array_t* array1, array_t* array2, int compar(const void*, co
     range_add_to_array(difference, array1);
     difference->free_func = array1->free_func;
     for (int i = 0; i < array2->size; i++) {
-        int result = remove_from_array(difference, get_array_index(array2, i), compar);
+        const int result = remove_from_array(difference, get_array_index(array2, i), compar);
         if (!result) {
             free_array(difference);
             return 0;
@@ -162,8 +164,8 @@ int array_set_equal(array_t* array1, array_t* array2, int compar(const void*, co
     return 1;
 }
 
-int random_number(int min_num, int max_num) {
-    int result, low_num, hi_num;
+int random_number(const int min_num, const int max_num) {
+    int low_num, hi_num;
 
     if (min_num < max_num) {
         low_num = min_num;
@@ -172,6 +174,6 @@ int random_number(int min_num, int max_num) {
         low_num = max_num; // include max_num in output
         hi_num = min_num;
     }
-    result = rand() % (hi_num - low_num) + low_num;
+    const int result = rand() % (hi_num - low_num) + low_num;
     return result;
 }

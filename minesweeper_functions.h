@@ -41,30 +41,30 @@ typedef struct board {
 
 int compare_tiles(const void* t1, const void* t2);
 
-int is_checked(tile_t* tile);
+int is_checked(const tile_t* tile);
 
-int is_flagged(tile_t* tile);
+int is_flagged(const tile_t* tile);
 
-int is_mine(tile_t* tile);
+int is_mine(const tile_t* tile);
 
 void set_surrounding_mines(tile_t* tile, byte mine_count);
 
-int get_surrounding_mines(tile_t* tile);
+int get_surrounding_mines(const tile_t* tile);
 
 board_t* create_board(int row, int col, int mines);
 
-tile_t* get_tile(board_t* board, int row, int col);
+tile_t* get_tile(const board_t* board, int row, int col);
 
-void print_board(board_t* board);
+void print_board(const board_t* board);
 
-int flag_tile(board_t* board, int row, int col);
+int flag_tile(const board_t* board, int row, int col);
 
 int check_tile(board_t* board, int row, int col);
 
-char tile_repr(tile_t* tile);
+char tile_repr(const tile_t* tile);
 
 void free_board(board_t* board);
 
-int flagged_all_mines(board_t* board);
+int flagged_all_mines(const board_t* board);
 
 #endif //MINESWEEPER_MINESWEEPER_FUNCTIONS_H

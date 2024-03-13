@@ -1,42 +1,43 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include "minesweeper_functions.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "time.h"
 
-int is_checked(tile_t* tile) {
+int is_checked(const tile_t* tile) {
     return tile->mine_state & IS_CHECKED;
 }
 
-int is_flagged(tile_t* tile) {
+int is_flagged(const tile_t* tile) {
     return tile->mine_state & IS_FLAGGED;
 }
 
-int is_mine(tile_t* tile) {
+int is_mine(const tile_t* tile) {
     return tile->mine_state & IS_MINE;
 }
 
-static inline void toggle_checked(tile_t* tile) {
+static void toggle_checked(tile_t* tile) {
     tile->mine_state ^= IS_CHECKED;
 }
 
-static inline void toggle_flagged(tile_t* tile) {
+static void toggle_flagged(tile_t* tile) {
     tile->mine_state ^= IS_FLAGGED;
 }
 
-static inline void toggle_mine(tile_t* tile) {
+static void toggle_mine(tile_t* tile) {
     tile->mine_state ^= IS_MINE;
 }
 
-void set_surrounding_mines(tile_t* tile, byte mine_count) {
-    tile->mine_state &= ((0b11111111) & ~(SURROUNDING_MINES_BITMASK << SURROUNDING_MINES_SHIFT));
-    tile->mine_state |= ((mine_count & SURROUNDING_MINES_BITMASK) << SURROUNDING_MINES_SHIFT);
+void set_surrounding_mines(tile_t* tile, const byte mine_count) {
+    tile->mine_state &= 0b11111111 & ~(SURROUNDING_MINES_BITMASK << SURROUNDING_MINES_SHIFT);
+    tile->mine_state |= (mine_count & SURROUNDING_MINES_BITMASK) << SURROUNDING_MINES_SHIFT;
 }
 
-int get_surrounding_mines(tile_t* tile) {
+int get_surrounding_mines(const tile_t* tile) {
     return (tile->mine_state & SURROUNDING_MINES) >> SURROUNDING_MINES_SHIFT;
 }
 
-tile_t* get_tile(board_t* board, int row, int col) {
+tile_t* get_tile(const board_t* board, const int row, const int col) {
     if (row < 0 || row >= board->row_size) {
         return NULL;
     }
@@ -46,7 +47,7 @@ tile_t* get_tile(board_t* board, int row, int col) {
     return &board->array[row][col];
 }
 
-int flag_tile(board_t* board, int row, int col) {
+int flag_tile(const board_t* board, const int row, const int col) {
     tile_t* tile = get_tile(board, row, col);
     if (!tile) {
         return INVALID_TILE;
@@ -55,13 +56,13 @@ int flag_tile(board_t* board, int row, int col) {
         return CHANGE_CHECKED;
     }
     toggle_flagged(tile);
-    if (remove_from_array(board->flag_tiles, (void*) tile, compare_tiles) == 0) {
-        add_to_array(board->flag_tiles, (void*) tile);
+    if (remove_from_array(board->flag_tiles, tile, compare_tiles) == 0) {
+        add_to_array(board->flag_tiles, tile);
     }
     return SUCCESS;
 }
 
-static inline void check_surrounding_tiles(board_t* board, int row, int col) {
+static void check_surrounding_tiles(board_t* board, const int row, const int col) {
     for (int r = -1; r <= 1; r++) {
         for (int c = -1; c <= 1; c++) {
             if (r == 0 && c == 0) {
@@ -72,7 +73,7 @@ static inline void check_surrounding_tiles(board_t* board, int row, int col) {
     }
 }
 
-int check_tile(board_t* board, int row, int col) {
+int check_tile(board_t* board, const int row, const int col) {
     tile_t* tile = get_tile(board, row, col);
     if (!tile) {
         return INVALID_TILE;
@@ -91,8 +92,9 @@ int check_tile(board_t* board, int row, int col) {
 }
 
 
-static inline void add_surrounding_mines(board_t* board, tile_t* mine) {
-    int row = mine->row, col = mine->column;
+static void add_surrounding_mines(const board_t* board, const tile_t* mine) {
+    const int row = mine->row;
+    const int col = mine->column;
     for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
             if (i == 0 && j == 0) {
@@ -110,13 +112,13 @@ static inline void add_surrounding_mines(board_t* board, tile_t* mine) {
     }
 }
 
-board_t* create_board(int row, int col, int mines) {
+board_t* create_board(const int row, const int col, const int mines) {
     if (row <= 0 || col <= 0 || mines > row * col) {
         perror("Invalid input");
         abort();
     }
     srand(time(0));
-    board_t* board = (board_t*) calloc(1, sizeof(board_t));
+    board_t* board = calloc(1, sizeof(board_t));
     board->array = (tile_t**) calloc(row, sizeof(tile_t*));
     board->row_size = row;
     board->col_size = col;
@@ -131,28 +133,28 @@ board_t* create_board(int row, int col, int mines) {
         }
     }
     while (board->mine_tiles->size < mines) {
-        int rand_row = random_number(0, row);
-        int rand_col = random_number(0, col);
+        const int rand_row = random_number(0, row);
+        const int rand_col = random_number(0, col);
         tile_t* random_tile = get_tile(board, rand_row, rand_col);
-        if (contained_in_array(board->mine_tiles, (void*) random_tile, compare_tiles)) {
+        if (contained_in_array(board->mine_tiles, random_tile, compare_tiles)) {
             continue;
         }
         toggle_mine(random_tile);
-        add_to_array(board->mine_tiles, (void*) random_tile);
+        add_to_array(board->mine_tiles, random_tile);
     }
     for (int i = 0; i < board->mine_tiles->size; i++) {
-        add_surrounding_mines(board, (tile_t*) get_array_index(board->mine_tiles, i));
+        add_surrounding_mines(board, get_array_index(board->mine_tiles, i));
     }
     return board;
 }
 
 int compare_tiles(const void* t1, const void* t2) {
-    tile_t* tile1 = (tile_t*) t1;
-    tile_t* tile2 = (tile_t*) t2;
-    return !((tile1->row == tile2->row) && (tile1->column == tile2->column));
+    const tile_t* tile1 = (tile_t*) t1;
+    const tile_t* tile2 = (tile_t*) t2;
+    return !(tile1->row == tile2->row && tile1->column == tile2->column);
 }
 
-char tile_repr(tile_t* tile) {
+char tile_repr(const tile_t* tile) {
     if (is_flagged(tile)) {
         return 'P';
     }
@@ -165,10 +167,10 @@ char tile_repr(tile_t* tile) {
     if (get_surrounding_mines(tile) == 0) {
         return ' ';
     }
-    return (char) (get_surrounding_mines(tile) + INT_TO_CHAR_OFFSET);
+    return get_surrounding_mines(tile) + INT_TO_CHAR_OFFSET;
 }
 
-void print_board(board_t* board) {
+void print_board(const board_t* board) {
     char row_str[MAX_BOARD_SIDE_LENGTH];
     char col_str[MAX_BOARD_SIDE_LENGTH];
     sprintf(row_str, "%d", board->row_size);
@@ -199,6 +201,6 @@ void free_board(board_t* board) {
     free(board);
 }
 
-int flagged_all_mines(board_t* board) {
+int flagged_all_mines(const board_t* board) {
     return array_set_equal(board->mine_tiles, board->flag_tiles, compare_tiles);
 }
