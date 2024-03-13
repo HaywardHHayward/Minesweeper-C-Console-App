@@ -1,15 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
+
 #include "minesweeper_functions.h"
 
 void check_tile_from_input(board_t* board, int* hit_mine) {
     fflush(stdin);
     int row, col;
-    char input[MAX_BOARD_SIDE_LENGTH];
     char* end;
     int valid = 0;
     do {
+        char input[MAX_BOARD_SIDE_LENGTH];
         do {
             printf("Enter row: ");
             fgets(input, MAX_BOARD_SIDE_LENGTH, stdin);
@@ -46,18 +48,17 @@ void check_tile_from_input(board_t* board, int* hit_mine) {
                 break;
             default:
                 printf("Invalid input.");
-                continue;
         }
     } while (!valid);
 }
 
-void flag_tile_from_input(board_t* board) {
+void flag_tile_from_input(const board_t* board) {
     fflush(stdin);
     int row, col;
-    char input[MAX_BOARD_SIDE_LENGTH];
     char* end;
     int valid = 0;
     do {
+        char input[MAX_BOARD_SIDE_LENGTH];
         do {
             printf("Enter row: ");
             fgets(input, MAX_BOARD_SIDE_LENGTH, stdin);
@@ -76,7 +77,7 @@ void flag_tile_from_input(board_t* board) {
             }
             fflush(stdin);
         } while (col <= 0 || col > board->col_size + 1);
-        int result = flag_tile(board, row - 1, col - 1);
+        const int result = flag_tile(board, row - 1, col - 1);
         switch (result) {
             case CHANGE_CHECKED:
                 printf("Cannot flag a tile which has already been checked. Try again.\n");
@@ -86,12 +87,11 @@ void flag_tile_from_input(board_t* board) {
                 break;
             default:
                 printf("Invalid input.");
-                continue;
         }
     } while (!valid);
 }
 
-int main(int argc, char** argv) {
+int main(const int argc, char** argv) {
     fflush(stdin);
     int row_size, col_size, mine_size;
     if (argc == 4) {
@@ -113,7 +113,6 @@ int main(int argc, char** argv) {
         }
     } else if (argc == 1) {
         char input[MAX_BOARD_SIDE_LENGTH];
-        char mine_input[MAX_MINE_INT_LENGTH];
         char* end;
         do {
             printf("Enter number of rows: ");
@@ -134,6 +133,7 @@ int main(int argc, char** argv) {
             fflush(stdin);
         } while (col_size <= 0);
         do {
+            char mine_input[MAX_MINE_INT_LENGTH];
             printf("Enter number of mines: ");
             fgets(mine_input, MAX_BOARD_SIDE_LENGTH, stdin);
             mine_size = (int) strtol(mine_input, &end, 10);
@@ -183,7 +183,7 @@ int main(int argc, char** argv) {
         } else {
             flag_tile_from_input(board);
         }
-        int flag_mines = flagged_all_mines(board);
+        const int flag_mines = flagged_all_mines(board);
         if (flag_mines) {
             win = 1;
             break;
